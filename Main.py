@@ -4,6 +4,7 @@ import asyncio
 test = discord.Client()
 
 commands = ['join', 'shutdown', 'leave', 'smashcapitalism']
+chats = ['rocketleague', 'menofwar', 'minecraft', 'paradox','politicalmachine','ksp', 'gta']
 
 @test.event
 async def on_ready():
@@ -20,12 +21,12 @@ async def on_message(message):
         contents = contents[1::]
         contents = contents.split(' ')
         if contents[0] in commands:
-            if contents[0] == 'join' and not contents[1].lower == 'admin':
+            if contents[0] == 'join' and contents[1] in chats:
                 role = message.server.roles
                 for i in role:
                     if i.name == contents[1].lower():
                         await test.add_roles(message.author, i)
-            elif contents[0] == 'leave' and not contents[1].lower == 'admin':
+            elif contents[0] == 'leave' and contents[1] in chats:
                 role = message.server.roles
                 for i in role:
                     if i.name == contents[1].lower():
