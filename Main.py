@@ -1,10 +1,12 @@
 import discord
 import asyncio
+import time
 
 test = discord.Client()
 
-commands = ['join', 'shutdown', 'leave', 'smashcapitalism']
+commands = ['join', 'shutdown', 'leave', 'smashcapitalism', 'mute', 'unmute']
 chats = ['rocketleague', 'menofwar', 'minecraft', 'paradox','politicalmachine','ksp', 'gta']
+mute_list = []
 
 @test.event
 async def on_ready():
@@ -31,14 +33,26 @@ async def on_message(message):
                 for i in role:
                     if i.name == contents[1].lower():
                         await test.remove_roles(message.author, i)
+            elif contents[0] == 'smashcapitalism':
+                await test.send_message(message.channel, ':bomb: SMASH CAPITALISM :bomb:')
             elif contents[0] == 'shutdown' and message.author.name == 'rexrex600':
                 await test.close()
             elif contents[0] == 'shutdown' and message.author.name != 'rexrex600':
                 await test.send_message(destination=message.channel, content='Fuck off', tts=True)
-            elif contents[0] == 'smashcapitalism':
-                await test.send_message(message.channel, ':bomb: SMASH CAPITALISM :bomb:')
+            elif contents[0] == 'mute' and message.author.permissions_in(message.channel).kick_members == True:
+                if not contents[1] in mute_list:
+                    mute_list.append(contents[1])
+                else:
+                    await test.send_messafe(message.author, 'user is already muted')
+            elif contents[0] == 'unmute' and message.author.permissions_in(message.channel).kick_members == True:
+                if contents[1] in mute_list:
+                    mute_list.remove(contents[1])
+                else:
+                    await test.send_messafe(message.author, 'user is not muted')
         else:
             await test.send_message(destination=message.channel, content='Invalid Command')
+        await test.delete_message(message)
+    if str(message.author).split('#')[0] in mute_list:
         await test.delete_message(message)
 
 
