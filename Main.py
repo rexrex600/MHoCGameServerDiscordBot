@@ -39,6 +39,7 @@ async def on_message(message):
                 await test.send_message(message.channel, ':bomb: SMASH CAPITALISM :bomb:')
         else:
             await test.send_message(destination=message.channel, content='Invalid Command')
+        await test.delete_message(message)
 
 
 loop = asyncio.get_event_loop()
