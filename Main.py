@@ -81,7 +81,7 @@ async def on_message(message):
         else:
             await test.send_message(destination=message.channel, content='Invalid Command')
         await test.delete_message(message)
-    if str(message.author).split('#')[0] in mute_list:
+    if ('#' + str(message.author).split('#')[1]) in mute_list:
         await test.delete_message(message)
 
 
