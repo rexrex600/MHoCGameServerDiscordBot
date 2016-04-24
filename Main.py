@@ -108,6 +108,14 @@ async def on_message(message):
         await test.delete_message(message)
 
 
+@test.event
+async def on_member_join(member):
+    test.send_message(member.server, member.name + " joined the server")
+
+@test.event
+async def on_member_remove(member):
+    test.send_message(member.server, member.name + " left the server")
+
 loop = asyncio.get_event_loop()
 
 try:
