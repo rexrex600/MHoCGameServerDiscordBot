@@ -1,12 +1,15 @@
 import discord
 import asyncio
-import time
+import pickle
 
 test = discord.Client()
+file = open('MuteList.txt', 'r')
+
+mute_list = []
+mute_list = file.read().split(',')
 
 commands = ['join', 'shutdown', 'leave', 'smashcapitalism', 'mute', 'unmute']
 chats = ['rocketleague', 'menofwar', 'minecraft', 'paradox','politicalmachine','ksp', 'gta']
-mute_list = []
 
 @test.event
 async def on_ready():
@@ -18,8 +21,11 @@ async def on_ready():
 
 @test.event
 async def on_message(message):
+    global mute_list
+    global file
     contents = message.content
     if contents[0] == '!':
+        print("command: ",  contents, "author: ", message.author)
         contents = contents[1::]
         contents = contents.split(' ')
         if contents[0] in commands:
@@ -36,19 +42,42 @@ async def on_message(message):
             elif contents[0] == 'smashcapitalism':
                 await test.send_message(message.channel, ':bomb: SMASH CAPITALISM :bomb:')
             elif contents[0] == 'shutdown' and message.author.name == 'rexrex600':
+                file.close()
+                await test.delete_message(message)
                 await test.close()
             elif contents[0] == 'shutdown' and message.author.name != 'rexrex600':
                 await test.send_message(destination=message.channel, content='Fuck off', tts=True)
-            elif contents[0] == 'mute' and message.author.permissions_in(message.channel).kick_members == True:
-                if not contents[1] in mute_list:
+            elif contents[0] == 'mute' and message.author.permissions_in(message.channel).kick_members is True:
+                file = open('MuteList.txt', 'r')
+                mute_list = file.read().split(',')
+                mute_list = [i for i in mute_list if i != '']
+                if contents[1] not in mute_list:
+                    file.close
                     mute_list.append(contents[1])
+                    file = open('MuteList.txt', 'w')
+                    dump_str = ''
+                    for i in mute_list:
+                        dump_str += i + ','
+                    file.write(dump_str)
                 else:
-                    await test.send_messafe(message.author, 'user is already muted')
-            elif contents[0] == 'unmute' and message.author.permissions_in(message.channel).kick_members == True:
+                    await test.send_message(message.author, 'user is already muted')
+                file.close()
+
+            elif contents[0] == 'unmute' and message.author.permissions_in(message.channel).kick_members is True:
+                file = open('MuteList.txt', 'r')
+                mute_list = file.read().split(',')
+                mute_list = [i for i in mute_list if i != '']
                 if contents[1] in mute_list:
+                    file.close()
                     mute_list.remove(contents[1])
+                    file = open('MuteList.txt', 'w')
+                    dump_str = ''
+                    for i in mute_list:
+                        dump_str += i + ','
+                    file.write(dump_str)
                 else:
-                    await test.send_messafe(message.author, 'user is not muted')
+                    await test.send_message(message.author, 'user is not muted')
+                file.close()
         else:
             await test.send_message(destination=message.channel, content='Invalid Command')
         await test.delete_message(message)
