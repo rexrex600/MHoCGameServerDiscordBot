@@ -18,7 +18,7 @@ mute_list = []
 mute_list = file.read().split(',')
 
 # Initialising the list of commands and valid chats for command-based joining
-commands = ['join', 'shutdown', 'leave', 'smashcapitalism', 'mute', 'unmute', 'lableme']
+commands = ['join', 'shutdown', 'leave', 'smashcapitalism', 'mute', 'unmute', 'lableme', 'commands']
 chats = ['rocketleague', 'menofwar', 'minecraft', 'paradox', 'politicalmachine', 'ksp', 'gta', 'civ', 'fallout']
 
 
@@ -109,7 +109,10 @@ async def on_message(message):
                 file.close()
             #Returns command list - UPDATE AFTER NEW COMMANDS ADDED
             elif contents[0] == 'commands':
-                await test.send_message(message.channel, 'My Commands are: !join, !leave, !mute, !unmute, !smashcapitalism')
+                delin = ' '
+                for i in commands:
+                    delin += '!' + i + ', '
+                await test.send_message(message.channel, 'My Commands are: ' + delin)
             # elif contents[0] == 'lableme':
             #     await test.add_roles(test.create_role(server = message.server, name = contents[1], permissions = discord.Permissions.none(), colour = (contents[2], contents[3], contents[4]), hosit = True, ))
         else:
