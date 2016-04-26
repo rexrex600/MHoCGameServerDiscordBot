@@ -2,10 +2,10 @@ import discord
 import asyncio
 import logger
 
+__authors__ = ['rexrex600, electric-blue-green']
+
 # Initialising the Logger
 logger = logger.Logger(name='MHoCGameServerLog.txt')
-
-__authors__ = ['rexrex600, electric-blue-green']
 
 # Initialising the discord client
 test = discord.Client()
@@ -43,7 +43,7 @@ async def on_message(message):
     else:
         if contents[0] == '!':
             # Logging the command and the author for moderation purposes
-            print("command: ", contents, "author: ", message.author)
+            logger.log(message)
             # Processing the command for parsing
             contents = contents[1::]
             contents = contents.split(' ')
