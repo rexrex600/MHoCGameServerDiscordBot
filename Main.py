@@ -18,7 +18,7 @@ mute_list = file.read().split(',')
 
 # Initialising the list of commands and valid chats for command-based joining
 commands = ['join', 'shutdown', 'leave', 'smashcapitalism', 'mute', 'unmute', 'lableme', 'commands']
-chats = ['rocketleague', 'menofwar', 'minecraft', 'paradox', 'politicalmachine', 'ksp', 'gta', 'civ', 'fallout']
+chats = ['rocketleague', 'menofwar', 'minecraft', 'paradox', 'politicalmachine', 'ksp', 'gta', 'civ', 'fallout', 'all']
 
 
 # Logging client login details
@@ -51,17 +51,27 @@ async def on_message(message):
                 # Join channel command - adds role
                 if contents[0] == 'join' and contents[1] in chats:
                     role = message.server.roles
-                    for i in role:
-                        if i.name == contents[1].lower():
+                    if contents[1] == 'all':
+                        role = [i for i in role if i.name != 'Admin' and i.name != '@everyone']
+                        for i in role:
                             await test.add_roles(message.author, i)
+                    else:
+                        for i in role:
+                            if i.name == contents[1].lower():
+                                await test.add_roles(message.author, i)
                     await test.send_message(message.channel, message.author.name + ' joined #' + contents[1])
                 # Leave channel command - removes role
                 elif contents[0] == 'leave' and contents[1] in chats:
-                    role = message.server.roles
-                    for i in role:
-                        if i.name == contents[1].lower():
+                    role = message.author.roles
+                    if contents[1] == 'all':
+                        role = [i for i in role if i.name != 'Admin' and i.name != '@everyone']
+                        for i in role:
                             await test.remove_roles(message.author, i)
-                    await test.send_message(message.channel, message.author.name + ' left #' + contents[1])
+                    else:
+                        for i in role:
+                            if i.name == contents[1].lower():
+                                await test.remove_roles(message.author, i)
+                        await test.send_message(message.channel, message.author.name + ' left #' + contents[1])
                 # Generic text response command
                 elif contents[0] == 'smashcapitalism':
                     await test.send_message(message.channel, ':bomb: SMASH CAPITALISM :bomb:')
