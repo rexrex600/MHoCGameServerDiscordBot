@@ -5,8 +5,6 @@ import logger
 # Initialising the Logger
 logger = logger.Logger(name = 'MHoCGameServerLog.txt')
 
-__authors__ = ['RexRex600, electric-blue-green']
-
 # Initialising the discord client
 test = discord.Client()
 
@@ -52,15 +50,13 @@ async def on_message(message):
                 for i in role:
                     if i.name == contents[1].lower():
                         await test.add_roles(message.author, i)
-                await test.send_message(message.channel, message.author.name+' joined #'+contents[1])
             # Leave channel command - removes role
             elif contents[0] == 'leave' and contents[1] in chats:
                 role = message.server.roles
                 for i in role:
                     if i.name == contents[1].lower():
                         await test.remove_roles(message.author, i)
-                await test.send_message(message.channel, message.author.name+' left #'+contents[1])
-            # Generic text response command
+            # Generic tesxt response command
             elif contents[0] == 'smashcapitalism':
                 await test.send_message(message.channel, ':bomb: SMASH CAPITALISM :bomb:')
             # Admin Command - shuts down the bot (atm restricted to rexrex600 because I have local access and am able to restart the bot
@@ -107,9 +103,6 @@ async def on_message(message):
                 else:
                     await test.send_message(message.author, 'user is not muted')
                 file.close()
-            #Returns command list - UPDATE AFTER NEW COMMANDS ADDED
-            elif contents[0] == 'commands':
-                await test.send_message(message.channel, 'My Commands are: !join, !leave, !mute, !unmute, !smashcapitalism')
             # elif contents[0] == 'lableme':
             #     await test.add_roles(test.create_role(server = message.server, name = contents[1], permissions = discord.Permissions.none(), colour = (contents[2], contents[3], contents[4]), hosit = True, ))
         else:
