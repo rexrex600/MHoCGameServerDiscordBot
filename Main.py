@@ -12,9 +12,11 @@ test = discord.Client()
 
 # Opening the MuteList log
 file = open('MuteList.txt', 'r')
+file2 = open('MuteListPlainText.txt', 'r')
 
 # Processing the MuteList file and loading the mute list from the file
 mute_list = file.read().split(',')
+mute_list_plain_text = file2.read().split(',')
 
 # Initialising the list of commands and valid chats for command-based joining
 commands = ['join', 'shutdown', 'leave', 'smashcapitalism', 'mute', 'unmute', 'lableme', 'commands']
@@ -36,6 +38,8 @@ async def on_message(message):
     # Invoking global variables
     global mute_list
     global file
+    global mute_list_plain_text
+    global file2
     contents = message.content
     # Checking for the command character
     if message.author.id in mute_list:
@@ -52,7 +56,7 @@ async def on_message(message):
                 if contents[0] == 'join' and contents[1] in chats:
                     role = message.server.roles
                     if contents[1] == 'all':
-                        role = [i for i in role if i.name != 'Admin' and i.name != '@everyone']
+                        role = [i for i in role if i.name != 'Admin' and i.name != '@everyone' and i.name != 'MHoC Game Server Bot']
                         for i in role:
                             await test.add_roles(message.author, i)
                     else:
@@ -64,7 +68,7 @@ async def on_message(message):
                 elif contents[0] == 'leave' and contents[1] in chats:
                     role = message.author.roles
                     if contents[1] == 'all':
-                        role = [i for i in role if i.name != 'Admin' and i.name != '@everyone']
+                        role = [i for i in role if i.name != 'Admin' and i.name != '@everyone' and i.name != 'MHoC Game Server Bot']
                         for i in role:
                             await test.remove_roles(message.author, i)
                     else:
@@ -89,37 +93,59 @@ async def on_message(message):
                     member_list = test.get_all_members()
                     target_user = [i for i in member_list if i.name in contents[1]][0]
                     file = open('MuteList.txt', 'r')
+                    file2 = open('MuteListPlainText.txt', 'r')
                     mute_list = file.read().split(',')
+                    mute_list_plain_text = file2.read().split(',')
                     mute_list = [i for i in mute_list if i != '']
+                    mute_list_plain_text = [i for i in mute_list_plain_text if i != '']
                     if target_user.id not in mute_list:
                         file.close()
+                        file2.close()
                         mute_list.append(target_user.id)
+                        mute_list_plain_text.append(target_user.name)
                         file = open('MuteList.txt', 'w')
+                        file2 = open('MuteListPlainText.txt', 'w')
                         dump_str = ''
                         for i in mute_list:
                             dump_str += i + ','
-                        file.write(dump_str)
+                            file.write(dump_str)
+                        dump_str = ''
+                        for i in mute_list_plain_text:
+                            dump_str += i + ','
+                        file2.write(dump_str)
                     else:
                         await test.send_message(message.author, 'user is already muted')
                     file.close()
+                    file2.close()
                 # Unmute command
                 elif contents[0] == 'unmute' and message.author.permissions_in(message.channel).kick_members is True:
                     member_list = test.get_all_members()
                     target_user = [i for i in member_list if i.name in contents[1]][0]
                     file = open('MuteList.txt', 'r')
+                    file2 = open('MuteListPlainText.txt', 'r')
                     mute_list = file.read().split(',')
+                    mute_list_plain_text = file2.read().split(',')
                     mute_list = [i for i in mute_list if i != '']
+                    mute_list_plain_text = [i for i in mute_list_plain_text if i != '']
                     if target_user.id in mute_list:
                         file.close()
+                        file2.close()
                         mute_list.remove(target_user.id)
+                        mute_list_plain_text.remove(target_user.name)
                         file = open('MuteList.txt', 'w')
+                        file2 = open('MuteListPlainText.txt', 'w')
                         dump_str = ''
                         for i in mute_list:
                             dump_str += i + ','
                         file.write(dump_str)
+                        dump_str = ''
+                        for i in mute_list_plain_text:
+                            dump_str += i + ','
+                        file2.write(dump_str)
                     else:
                         await test.send_message(message.author, 'user is not muted')
                     file.close()
+                    file2.close()
                 # Returns command list - UPDATE AFTER NEW COMMANDS ADDED
                 elif contents[0] == 'commands':
                     delin = ' '
